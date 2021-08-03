@@ -32,7 +32,7 @@ app.get('/register', function (req, res) {
     res.render('register');
 });
 
-//register a new user 
+//register a new user
 app.post('/register', function (req, res) {
     const newUser = new User({
         email: req.body.username,
@@ -47,7 +47,25 @@ app.post('/register', function (req, res) {
     });
 });
 
+//login with existing user from DB
+app.post('/login', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
 
+    User.findOne({ email: username }, function (err, foundUser) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundUser) {
+                if (foundUser.password === password) {
+                    res.render('secrets');
+                } else {
+                    res.send("Wrong email or password")
+                }
+            }
+        }
+    });
+});
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Server is started');
